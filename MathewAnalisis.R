@@ -1,5 +1,6 @@
 library(rlang)
-
+library(cluster) 
+library(ggplot2)
 datos_modificados_cuartiles <- function(datos, nombre_columna, cuartil_inferior, cuartil_superior) {
   ci <- cuartil_inferior / 100
   cs <- cuartil_superior / 100
@@ -126,6 +127,13 @@ grafico_serie_tiempo <- ggplot(datos, aes(x = fecha, y = valor_numerico)) +
 
 # Mostrar el gráfico
 print(grafico_serie_tiempo)
+#--------------------------fucnion de fecha------------------------------------
+#*********************************************************************************************************************************************************
+cambio_fecha <- function(datos, fecha) {
+  # Asegurar que se usa correctamente el nombre de la columna pasada como parámetro
+  datos[[fecha]] <- as.Date(datos[[fecha]], origin = "1899-12-30")
+  return(datos)
+}
 
 
 pregunta3 <- function(datos, fechas, numeros) {
@@ -149,7 +157,89 @@ pregunta3 <- function(datos, fechas, numeros) {
   # Mostrar el gráfico
   print(grafico_serie_tiempo)
 }
-
+#**********************************************************************************************************************************************************
 # Leer el archivo de Excel
 datos <- read_excel("polizas.xlsx")
 pregunta3(datos, "fecha_emision", "prima_anual")
+
+
+#PREGUNTA 4---------------------------------------------------------------------
+
+# Supongamos que 'datos' tiene las columnas necesarias ya definidas
+# Codificación de variables categóricas
+datos <- datos %>%
+  mutate(across(c(tipo_persona, tipo_agente), as.factor)) %>%
+  mutate(tipo_persona = as.numeric(as.factor(tipo_persona)), 
+         tipo_agente = as.numeric(as.factor(tipo_agente)))
+
+# Aplicación de k-Means
+set.seed(123)  # Para reproducibilidad
+k <- kmeans(datos[, c("tipo_persona", "tipo_agente", "suma_aseg")], centers = 3, nstart = 25)
+
+# Añadir la asignación de cluster al dataframe
+datos$cluster <- as.factor(k$cluster)
+
+# Creación del gráfico
+G<-ggplot(datos, aes(x = tipo_agente, y = suma_aseg, color = cluster)) +
+  geom_point(alpha = 0.5) +  # Puntos semi-transparentes
+  theme_minimal() +
+  labs(title = "Distribución de Clusters",
+       x = "Tipo de Agente",
+       y = "Suma Asegurada") +
+  scale_color_brewer(palette = "Set1")  # Colores distintivos para cada cluster
+
+fecha<-datos$fecha_constitucion <- as.Date(datos$fecha_constitucion, origin = "1899-12-30")
+
+#-------------------------------------------------------------------------------
+#**********************************************************************************************************************************************************
+pregunta4 <- function(datos, tipo1, tipo2, numeros) {
+  tipo1_sym <- rlang::sym(tipo1)
+  tipo2_sym <- rlang::sym(tipo2)
+  numeros_sym <- rlang::sym(numeros)
+  
+  # Preparación de datos
+  datos <- datos %>%
+    mutate(across(all_of(c(tipo1, tipo2)), as.factor)) %>%
+    mutate(!!tipo1_sym := as.numeric(as.factor(!!tipo1_sym)),
+           !!tipo2_sym := as.numeric(as.factor(!!tipo2_sym)))
+  
+  # Aplicación de k-Means
+  set.seed(123)
+  k <- kmeans(datos %>% select(!!tipo1_sym, !!tipo2_sym, !!numeros_sym), centers = 3, nstart = 25)
+  datos$cluster <- as.factor(k$cluster)
+  
+  # Creación del gráfico con facetas
+  G <- ggplot(datos, aes(x = !!tipo2_sym, y = !!numeros_sym, color = cluster)) +
+    geom_point(alpha = 0.5) +
+    #facet_wrap(~cluster) +  # Crea una faceta para cada cluster
+    theme_minimal() +
+    labs(title = "Distribución de Clusters",
+         x = paste("Tipo", tipo2),
+         y = "Suma Asegurada") +
+    scale_color_brewer(palette = "Set1")
+  
+  print(G)
+}
+#**********************************************************************************************************************************************************
+datos <- read_excel("polizas.xlsx")
+pregunta4(datos, "tipo_persona", "tipo_agente", "suma_aseg")
+
+#regresion lineal----------------------------------------------------------
+
+
+regresion <- function(datos, variable1, variable2){
+  # Asegurar que las variables se usan correctamente como nombres de columnas en aes()
+  R <- ggplot(datos, aes(x = .data[[variable1]], y = .data[[variable2]])) +  # Usa .data[[ ]] para referenciar dinámicamente las columnas
+    geom_point() +  # Añade puntos de datos
+    geom_smooth(method = "lm", se = TRUE, color = "blue") +  # Añade la línea de regresión lineal
+    labs(title = "Gráfico de Regresión Lineal", x = variable1, y = variable2) +
+    theme_minimal()  # Añade un tema minimalista
+  print(R)
+}
+
+
+datos <- read_excel("polizas.xlsx")
+regresion(datos, "prima_anual", "suma_aseg")
+d1<-datos_modificados_cuartiles(datos, "prima_anual", 25, 75 )
+d2<-datos_modificados_cuartiles(d1, "suma_aseg", 25, 75 )
+regresion(d2, "prima_anual", "suma_aseg")

@@ -23,7 +23,8 @@ tabla_contingencia <- datos %>%
 matriz_contingencia <- xtabs(prima_total ~ sucursal + ramo_comercial, data = tabla_contingencia)
 
 prueba_chi <- chisq.test(matriz_contingencia)
-print(prueba_chi)
+print(prueba_chi$statistic)
+prueba_chi$p.value
 
 residuos <- residuals(prueba_chi, type = "pearson")
 print(residuos)
