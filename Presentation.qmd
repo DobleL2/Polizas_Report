@@ -96,17 +96,18 @@ Las pólizas de seguro son esenciales para proteger a individuos y empresas cont
 
 Las pólizas de seguro son contratos entre una entidad aseguradora y una persona o empresa, en los cuales la aseguradora se compromete a compensar al asegurado por pérdidas específicas a cambio de una prima periódica. Estos contratos proporcionan protección financiera cubriendo diversos riesgos, como accidentes, enfermedades, daños a la propiedad, o responsabilidad legal.
 
-###	Importancia. {style="text-align: justify;"}
-- Proteccion y seguridad financiera.
-- Faciliatacion del riesgo empresarial.
-- Requerimiento Legal y Contractual
+### Importancia. {style="text-align: justify;"}
+
+-   Proteccion y seguridad financiera.
+-   Faciliatacion del riesgo empresarial.
+-   Requerimiento Legal y Contractual
 :::
 
 ## Análisis de los valores atípicos {.smaller background-image="images/background2.png"}
 
 ::: panel-tabset
-
 ### Visualización
+
 ```{r}
 datos_modificados_cuartiles <- function(datos, nombre_columna, cuartil_inferior, cuartil_superior) {
   ci <- cuartil_inferior / 100
@@ -283,9 +284,10 @@ output$viewGrafico2 <- renderPlot({
   grafico2()
 })
 ```
+
 ### Tratamiento {.smaller background-image="images/background2.png" style="font-size:0.6em;"}
 
-```{.r}
+``` r
 datos_modificados_cuartiles <- function(datos, nombre_columna, cuartil_inferior, cuartil_superior) {
   ci <- cuartil_inferior / 100
   cs <- cuartil_superior / 100
@@ -312,7 +314,7 @@ datos_modificados_cuartiles <- function(datos, nombre_columna, cuartil_inferior,
 
 ### Diagrama {.smaller background-image="images/background2.png" style="font-size:0.6em;"}
 
-```{.r}
+``` r
 diagrama_caja_bigotes<- function(datos, nombre_columna, cuartil_inferior, cuartil_superior){
   # Convertir porcentajes a decimales
   ci <- cuartil_inferior / 100
@@ -339,7 +341,6 @@ diagrama_caja_bigotes<- function(datos, nombre_columna, cuartil_inferior, cuarti
   print(p)
 }
 ```
-
 :::
 
 ## Relacion sucursal y ramo comercial {.smaller background-image="images/background2.png"}
@@ -455,14 +456,13 @@ output$viewTable3 <- renderTable({
 })
 ```
 
-
 ```{r}
 tableOutput("viewTable3")
 ```
+
 ### Análisis y generación de tablas
 
-
-```{.r}
+``` r
 pregunta2 <- function(datos, relacion1, relacion2, numerico1){
   # Convert column names from string to symbols
   relacion1_sym <- sym(relacion1)
@@ -508,22 +508,21 @@ pregunta2 <- function(datos, relacion1, relacion2, numerico1){
   return(resultado)
 }
 ```
-
-
 :::
 
 ## Serie Temporal {.smaller background-image="images/background2.png"}
 
 ::: panel-tabset
-
 ### Visualización de las series {.smaller background-image="images/background2.png"}
 
 #### Serie de tiempo que muestra el comportamiento de la prima anual
+
 ```{r}
 plotOutput("diagrama2")
 ```
 
 #### Serie de tiempo que muestra el comportamiento de la suma asegurada
+
 ```{r}
 plotOutput("diagrama3")
 ```
@@ -595,7 +594,7 @@ output$diagrama3 <- renderPlot({
 
 ### Código de los gráficos {.smaller background-image="images/background2.png"}
 
-```{.r}
+``` r
 pregunta3 <- function(datos, fechas, numeros) {
   # Convertir nombres de columnas de string a símbolos y evaluarlos
   fechas_sym <- rlang::sym(fechas)
@@ -632,10 +631,9 @@ pregunta3 <- function(datos, fechas, numeros) {
 ```
 :::
 
-## Segmentación de Clientes  {.smaller background-image="images/background2.png"}
+## Segmentación de Clientes {.smaller background-image="images/background2.png"}
 
 ::: panel-tabset
-
 ### Visualización de las clusters {.smaller background-image="images/background2.png"}
 
 ```{r}
@@ -694,7 +692,7 @@ output$diagrama4 <- renderPlot({
 
 ### Generación K-means {.smaller background-image="images/background2.png"}
 
-```{.r}
+``` r
 pregunta4 <- function(datos, tipo1, tipo2, numeros, centros, repeticiones) {
   tipo1_sym <- rlang::sym(tipo1)
   tipo2_sym <- rlang::sym(tipo2)
@@ -723,5 +721,4 @@ pregunta4 <- function(datos, tipo1, tipo2, numeros, centros, repeticiones) {
   print(G)
 }
 ```
-
 :::
