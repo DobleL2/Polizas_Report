@@ -1,3 +1,5 @@
+library(rlang)
+
 datos_modificados_cuartiles <- function(datos, nombre_columna, cuartil_inferior, cuartil_superior) {
   ci <- cuartil_inferior / 100
   cs <- cuartil_superior / 100
@@ -54,8 +56,56 @@ diagrama_caja_bigotes(datos, "prima_anual", 98, 99.999)
 datos_prima<-datos_modificados_cuartiles(datos, "prima_anual" , 25, 80)
 diagrama_caja_bigotes(datos_prima, "prima_anual", 25, 75)
 
+#el valor p 
+#pearson 
+grafico 
 
+pregunta2 <- function(datos, relacion1, relacion2, numerico1){
+  # Convertir nombres de columnas de string a símbolos
+  relacion1_sym <- sym(relacion1)
+  relacion2_sym <- sym(relacion2)
+  numerico1_sym <- sym(numerico1)
+  
+  # Agrupar y sumarizar para calcular el total
+  tabla_conti <- datos %>%
+    group_by(!!relacion1_sym, !!relacion2_sym) %>%
+    summarise(total_numerico1 = sum(!!numerico1_sym, na.rm = TRUE), .groups = 'drop')
+  
+  # Convertir símbolos a nombres de columnas para usar en xtabs
+  relacion1_char <- as.character(rlang::expr(!!relacion1_sym))
+  relacion2_char <- as.character(rlang::expr(!!relacion2_sym))
+  
+  # Crear matriz de contingencia
+  matriz_contingencia <- xtabs(total_numerico1 ~ get(relacion1_char) + get(relacion2_char), data = tabla_conti)
+  
+  # Realizar prueba chi-cuadrado
+  prueba_chi <- chisq.test(matriz_contingencia)
+  result1 <- prueba_chi$p.value
+  
+  # Calcular residuos
+  residuos <- residuals(prueba_chi, type = "pearson")
+  result2 <- residuos
+  
+  # Crear gráfico
+  grafica <- ggplot(tabla_conti, aes(x = get(relacion1_char), y = total_numerico1, fill = get(relacion2_char))) +
+    geom_bar(stat = "identity", position = position_dodge()) +
+    theme_minimal() +
+    labs(title = "Numerico1 Promedio por Relacion1 y Relacion2",
+         x = relacion1,
+         y = "Numerico1 Promedio")
+  
+  # Devolver resultados como una lista
+  resultado <- list(Contigencia = matriz_contingencia,
+                    Valorp = result1,
+                    Residuos = result2,
+                    Diagrama = grafica)
+  
+  return(resultado)
+}
+# Leer el archivo de Excel
+datos <- read_excel("polizas.xlsx")
 
+pregunta2(datos, "sucursal", "ramo_comercial", "prima_emitida")
 
 
 
