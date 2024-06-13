@@ -108,4 +108,48 @@ datos <- read_excel("polizas.xlsx")
 pregunta2(datos, "sucursal", "ramo_comercial", "prima_emitida")
 
 
+#PREGUNTA 3---------------------------------------------------------------------
 
+
+#Conversion de fechas y verificacion de datos----------------------------------
+datos$fecha_constitucion <- as.Date(datos$fecha_emision, origin = "1899-12-30")
+datos$fecha_constitucion
+
+# Crear un gráfico de línea para la serie de tiempo
+grafico_serie_tiempo <- ggplot(datos, aes(x = fecha, y = valor_numerico)) +
+  geom_line(group = 1, colour = "blue") +  # Utiliza geom_line para crear una línea
+  theme_minimal() +
+  labs(title = "Serie de Tiempo de Valor Numérico",
+       x = "Fecha",
+       y = "Valor Numérico") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Inclinar las etiquetas de fecha si son demasiadas o muy largas
+
+# Mostrar el gráfico
+print(grafico_serie_tiempo)
+
+
+pregunta3 <- function(datos, fechas, numeros) {
+  # Convertir nombres de columnas de string a símbolos y evaluarlos
+  fechas_sym <- rlang::sym(fechas)
+  numeros_sym <- rlang::sym(numeros)
+  
+  # Conversion de fechas y verificacion de datos
+  # Asegúrate de convertir la columna de fecha correcta
+  datos[[fechas]] <- as.Date(datos[[fechas]], origin = "1899-12-30")
+  
+  # Crear un gráfico de línea para la serie de tiempo
+  grafico_serie_tiempo <- ggplot(datos, aes(x = !!fechas_sym, y = !!numeros_sym)) +
+    geom_line(group = 1, colour = "skyblue") +  # Utiliza geom_line para crear una línea
+    theme_minimal() +
+    labs(title = "Serie de Tiempo de Valor Numérico",
+         x = "Fecha",
+         y = "Valor Numérico") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Inclinar las etiquetas de fecha si son demasiadas o muy largas
+  
+  # Mostrar el gráfico
+  print(grafico_serie_tiempo)
+}
+
+# Leer el archivo de Excel
+datos <- read_excel("polizas.xlsx")
+pregunta3(datos, "fecha_emision", "prima_anual")
