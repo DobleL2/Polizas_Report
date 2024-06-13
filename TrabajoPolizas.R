@@ -7,6 +7,7 @@ library("lubridate")
 library("tidyverse")
 library("dplyr")
 library("ggplot2")
+library(readxl)  # Para leer archivos Excel
 
 #Importar los datos a un data frame---------------------------------------------
 datos <- read_excel("polizas.xlsx")
@@ -95,8 +96,18 @@ ggplot(datos, aes(x = rep('Suma Asegurada', nrow(datos)), y = suma_aseg)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Ajusta la orientación del texto en el eje x si es necesario
 
-# Histograma para 'suma_asegurada' con un ancho de bin especificado
-crear_histograma(datos, "suma_aseg", binwidth = 10000)
+# Función para crear un histograma de suma_asegurada
+crear_histograma_suma_asegurada <- function(binwidth = 10000) {
+  ggplot(datos, aes(x = suma_aseg)) +
+    geom_histogram(binwidth = binwidth, fill = "red", color = "black") +
+    labs(title = "Histograma de Suma Asegurada",
+         x = "Suma Asegurada",
+         y = "Frecuencia") +
+    theme_minimal()
+}
+
+# Ejemplo de uso de la función
+crear_histograma_suma_asegurada(80000000) # Puedes cambiar 10000 a cualquier otro ancho de bin deseado
 
 
 #------------------------------------prima anual 
@@ -138,9 +149,28 @@ IQR_suma <- Q3_suma - Q1_suma
 outliers_prima <- datos$prima_anual < (Q1_prima - 1.5 * IQR_prima) | datos$prima_anual > (Q3_prima + 1.5 * IQR_prima)
 outliers_suma <- datos$suma_aseg < (Q1_suma - 1.5 * IQR_suma) | datos$suma_aseg > (Q3_suma + 1.5 * IQR_suma)
 
+# Determinar valores atípicos inferiores
+outliers_prima_inferiores <- datos$prima_anual < (Q1_prima - 1.5 * IQR_prima) 
+outliers_suma_inferiores <- datos$suma_aseg < (Q1_suma - 1.5 * IQR_suma) 
+
+# Determinar valores atípicos superiores
+outliers_prima_superiores <- datos$prima_anual > (Q3_prima + 1.5 * IQR_prima)
+outliers_suma_superiores <- datos$suma_aseg > (Q3_suma + 1.5 * IQR_suma)
+
+
 #Veamos cuantos valores atipicos exiten en cada columna
+sum(outliers_prima_superiores)
+sum(outliers_suma_superiores)
+
+sum(outliers_prima_inferiores)
+sum(outliers_suma_inferiores)
+
 sum(outliers_prima)
 sum(outliers_suma)
+
+var_primas<- sd(datos$prima_anual)
+var_sumas<- sd(datos$suma_aseg)
+
 
 #Correcion de valores atipicos
 # Tratamiento de valores atípicos para prima anual
@@ -152,6 +182,23 @@ datos$prima_anual[outliers_prima] <- ifelse(datos$prima_anual[outliers_prima] > 
 datos$suma_aseg[outliers_suma] <- ifelse(datos$suma_aseg[outliers_suma] > (Q3_suma + 1.5 * IQR_suma), Q3_suma + 1.5 * IQR_suma, 
                                        ifelse(datos$suma_aseg[outliers_suma] < (Q1_suma - 1.5 * IQR_suma), Q1_suma - 1.5 * IQR_suma,
                                        datos$suma_aseg[outliers_suma]))
+
+var_primas<- sd(datos$prima_anual)
+var_sumas<- sd(datos$suma_aseg)
+
+media_prima_anual <- mean(datos$prima_anual, na.rm = TRUE)
+media_suma_asegurada <- mean(datos$suma_aseg, na.rm = TRUE)
+
+ggplot(datos, aes(x = rep('Suma Asegurada', nrow(datos)), y = suma_aseg)) +
+  geom_point(alpha = 0.5, color = "blue") +  # Puntos para cada dato
+  geom_point(aes(y = media_suma_asegurada), color = "red", size = 5) +  # Punto para la media
+  labs(title = "Dispersión de Suma Asegurada con Media",
+       x = "",
+       y = "Suma Asegurada") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Ajusta la orientación del texto en el eje x si es necesario
+
+
 #Revision y confirmacion 
 summary(datos$prima_anual)
 summary(datos$suma_aseg)
