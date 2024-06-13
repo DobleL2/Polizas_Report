@@ -1,6 +1,9 @@
 library(rlang)
 library(cluster) 
 library(ggplot2)
+library(readxl) 
+library(dplyr)
+library(lubridate)
 datos_modificados_cuartiles <- function(datos, nombre_columna, cuartil_inferior, cuartil_superior) {
   ci <- cuartil_inferior / 100
   cs <- cuartil_superior / 100
@@ -141,15 +144,29 @@ pregunta3 <- function(datos, fechas, numeros) {
   fechas_sym <- rlang::sym(fechas)
   numeros_sym <- rlang::sym(numeros)
   
-  cambio_fecha(datos,fechas)
+  # Convertir la columna de fechas y asegurar que está en formato de fecha
+  datos <- datos %>%
+    mutate(!!fechas_sym := as.Date(!!fechas_sym, origin = "1899-12-30"),
+           MonthYear = floor_date(!!fechas_sym, "month"))  # Agrupar por mes y año
+  
+  # Agrupar datos por la nueva columna MonthYear y calcular el promedio de numeros
+  datos_agrupados <- datos %>%
+    group_by(MonthYear) %>%
+    summarize(ValorNumerico = mean(!!numeros_sym, na.rm = TRUE), .groups = 'drop')
+  
+  # Minimo y maximo para escalas
+  minimo <- min(datos_agrupados$ValorNumerico)
+  maximo <- max(datos_agrupados$ValorNumerico)
+  intervalo <- (maximo - minimo) / 10  # Ajusta esto según la precisión deseada en el eje y
   
   # Crear un gráfico de línea para la serie de tiempo
-  grafico_serie_tiempo <- ggplot(datos, aes(x = !!fechas_sym, y = !!numeros_sym)) +
-    geom_line(group = 1, colour = "skyblue") +  # Utiliza geom_line para crear una línea
+  grafico_serie_tiempo <- ggplot(datos_agrupados, aes(x = MonthYear, y = ValorNumerico)) +
+    geom_line(group = 2, colour = "skyblue") +
+    scale_y_continuous(limits = c(minimo, maximo), breaks = seq(minimo, maximo, by = intervalo)) +
     theme_minimal() +
-    labs(title = "Serie de Tiempo de Valor Numérico",
-         x = "Fecha",
-         y = "Valor Numérico") +
+    labs(title = "Serie de Tiempo de Valor Numérico por Mes",
+         x = "Mes y Año",
+         y = "Valor Numérico Promedio") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Inclinar las etiquetas de fecha si son demasiadas o muy largas
   
   # Mostrar el gráfico
@@ -159,6 +176,7 @@ pregunta3 <- function(datos, fechas, numeros) {
 # Leer el archivo de Excel
 datos <- read_excel("polizas.xlsx")
 pregunta3(datos, "fecha_emision", "prima_anual")
+pregunta3(datos, "fecha_emision", "suma_aseg")
 
 
 #PREGUNTA 4---------------------------------------------------------------------
@@ -190,7 +208,7 @@ fecha<-datos$fecha_constitucion <- as.Date(datos$fecha_constitucion, origin = "1
 
 #-------------------------------------------------------------------------------
 #**********************************************************************************************************************************************************
-pregunta4 <- function(datos, tipo1, tipo2, numeros) {
+pregunta4 <- function(datos, tipo1, tipo2, numeros, centros, repeticiones) {
   tipo1_sym <- rlang::sym(tipo1)
   tipo2_sym <- rlang::sym(tipo2)
   numeros_sym <- rlang::sym(numeros)
@@ -202,8 +220,7 @@ pregunta4 <- function(datos, tipo1, tipo2, numeros) {
            !!tipo2_sym := as.numeric(as.factor(!!tipo2_sym)))
   
   # Aplicación de k-Means
-  set.seed(123)
-  k <- kmeans(datos %>% select(!!tipo1_sym, !!tipo2_sym, !!numeros_sym), centers = 3, nstart = 25)
+  k <- kmeans(datos %>% select(!!tipo1_sym, !!tipo2_sym, !!numeros_sym), centers = centros, nstart = repeticiones)
   datos$cluster <- as.factor(k$cluster)
   
   # Creación del gráfico con facetas
@@ -220,8 +237,10 @@ pregunta4 <- function(datos, tipo1, tipo2, numeros) {
 }
 #**********************************************************************************************************************************************************
 datos <- read_excel("polizas.xlsx")
-pregunta4(datos, "tipo_persona", "tipo_agente", "suma_aseg")
+pregunta4(datos, "tipo_persona", "tipo_agente", "suma_aseg", 3, 10)
 
+
+#*********************************************************************************************
 #regresion lineal----------------------------------------------------------
 
 
