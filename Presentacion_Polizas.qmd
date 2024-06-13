@@ -1,0 +1,102 @@
+---
+title: "Analisis de datos"
+author: "Luis Lapo y Mathew Cisneros"
+format: 
+  html:
+    toc: true
+    toc-location: left
+    toc-depth: 2
+    toc-float:
+      collapsed: false
+      smooth-scroll: true
+      width: 200
+editor: visual
+---
+
+# Introduccion.
+
+Las pólizas de seguro son esenciales para proteger a individuos y empresas contra riesgos financieros imprevistos, ofreciendo estabilidad económica. Analizar estos datos ayuda a las aseguradoras a comprender mejor los riesgos y adaptar sus productos a las necesidades específicas de los clientes.
+
+## ¿Que son las polizas de seguro?
+
+Las pólizas de seguro son contratos entre una entidad aseguradora y una persona o empresa, en los cuales la aseguradora se compromete a compensar al asegurado por pérdidas específicas a cambio de una prima periódica. Estos contratos proporcionan protección financiera cubriendo diversos riesgos, como accidentes, enfermedades, daños a la propiedad, o responsabilidad legal.
+
+## Importancia de las polizas de seguro.
+
+### Proteccion y seguridad financiera.
+
+Las pólizas de seguro son clave para mitigar riesgos financieros, permitiendo que asegurados transfieran el riesgo de eventos imprevistos a la aseguradora a cambio de una prima. Esto facilita una recuperación más rápida y mantiene la estabilidad económica y personal tras adversidades.
+
+### Faciliatacion del riesgo empresarial.
+
+Para las empresas, las pólizas de seguro son cruciales para gestionar riesgos que podrían obstaculizar su operación y crecimiento. Desde la cobertura de responsabilidad civil hasta el seguro de propiedad, las pólizas permiten que las empresas tomen riesgos calculados, lo cual es esencial para la innovación y la expansión.
+
+### Requerimiento Legal y Contractual
+
+En muchos casos, tener ciertos tipos de seguro es un requisito legal o contractual. Por ejemplo, el seguro de vehículos es obligatorio en muchos países, y el seguro de responsabilidad civil puede ser necesario para contratos comerciales. Estas pólizas garantizan que tanto las partes involucradas como terceros estén protegidos en caso de un siniestro.
+
+# Primera vista a los datos.
+
+Vamos a entender los datos, a primera vista tenemos 15 columnas, las cuales representan lo siguiente:
+
+\- Giro de actividad: Clasifica la actividad principal del titular de la póliza, como producción o comercialización/distribución.
+
+\- Fecha de contitucion: Fecha en que se constituyó la empresa del titular.
+
+\- ID Poliza: Identificador único para cada póliza de seguro.
+
+\- Anio Mes: Fecha de referencia para alguna accion o resgistro.
+
+\- Tipo de Agente: Indica el tipo de agente de seguros. - Sucursal: Ubicacion de la sucursal donde se registro la poliza.
+
+\- Ramo Comercial: Especifica el tipo de cobertura de la póliza.
+
+\- Tipo persona: Clasifica al titular de la póliza.
+
+\- Prima anual: Monto anual de la póliza. - Prima emitida: Prima emitida para la póliza en un período específico.
+
+\- Fecha emision: Fecha en que se emitió la póliza.
+
+\- Fecha vigencia_desde: Fecha de inicio de la vigencia de la póliza
+
+\- Fecha vigencia_hasta: Fecha de fin de la vigencia de la póliza
+
+\- Forma pago: Método de pago de la póliza
+
+\- Suma aseg: Suma asegurada en la póliza, probablemente indicando el máximo a pagar en caso de siniestro.
+
+## Importacion de los datos
+
+Vamos a importar la base de datos, el archivo de excel, en la pestaña de envionment y le damos en "Import Dataset"
+
+# Procesamiento de datos y manejo de calidad
+
+Contenido de la Subsección 1.1
+
+## Subsección 1.2
+
+Contenido de la Subsección 1.2
+
+# Sección 2
+
+Contenido de la Sección 2
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+#el codigo y me muestra el resultado
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
