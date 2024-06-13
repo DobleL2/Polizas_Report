@@ -141,9 +141,7 @@ pregunta3 <- function(datos, fechas, numeros) {
   fechas_sym <- rlang::sym(fechas)
   numeros_sym <- rlang::sym(numeros)
   
-  # Conversion de fechas y verificacion de datos
-  # Asegúrate de convertir la columna de fecha correcta
-  datos[[fechas]] <- as.Date(datos[[fechas]], origin = "1899-12-30")
+  cambio_fecha(datos,fechas)
   
   # Crear un gráfico de línea para la serie de tiempo
   grafico_serie_tiempo <- ggplot(datos, aes(x = !!fechas_sym, y = !!numeros_sym)) +
