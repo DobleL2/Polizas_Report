@@ -5,7 +5,6 @@ library("data.table")
 library("tibble")
 library("lubridate")
 library("tidyverse")
-library("tibble")
 library("dplyr")
 library("ggplot2")
 
@@ -54,20 +53,70 @@ colSums(is.na(datos))
 datos$fecha_constitucion <- as.Date(datos$fecha_constitucion, origin = "1899-12-30")
 datos$fecha_constitucion
 
+
+#-------------------------------------------------------------------------------
 #Identifiquemos valores atipicos------------------------------------------------
 #Vamos a visualizar de manera grafica de la "prima anual" y de "suma asegurada"
+
+#vamos hacer un grafico de dispersion para tener mas claro esto, donde vamos a
+#mostrar la media para ver que tanto influye en los datos
+
+media_prima_anual <- mean(datos$prima_anual, na.rm = TRUE)
+media_suma_asegurada <- mean(datos$suma_aseg, na.rm = TRUE)
+#--------------------------fucnciones----------------------------------------
+#graficos de dispersion
+calcular_binwidth <- function(data) {
+  range <- max(data, na.rm = TRUE) - min(data, na.rm = TRUE)
+  bins <- ceiling(log2(length(na.omit(data))) + 1)
+  return(range / bins)
+}
+
+#histograma
+crear_histograma <- function(data, columna, binwidth) {
+  # Usar ggplot para crear el histograma
+  p <- ggplot(data, aes_string(x = columna)) +
+    geom_histogram(binwidth = binwidth, fill = "blue", color = "black") +
+    labs(title = paste("Histograma de", columna),
+         x = columna,
+         y = "Frecuencia") +
+    theme_minimal()
+  
+  # Imprimir el histograma
+  print(p)
+}
+#-------------------------------------------------------------------------------
+#suma asegurada
+ggplot(datos, aes(x = rep('Suma Asegurada', nrow(datos)), y = suma_aseg)) +
+  geom_point(alpha = 0.5, color = "blue") +  # Puntos para cada dato
+  geom_point(aes(y = media_suma_asegurada), color = "red", size = 5) +  # Punto para la media
+  labs(title = "Dispersión de Suma Asegurada con Media",
+       x = "",
+       y = "Suma Asegurada") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Ajusta la orientación del texto en el eje x si es necesario
+
+# Histograma para 'suma_asegurada' con un ancho de bin especificado
+crear_histograma(datos, "suma_aseg", binwidth = 10000)
+
+
+#------------------------------------prima anual 
+ggplot(datos, aes(x = rep('Prima Anual', nrow(datos)), y = prima_anual)) +
+  geom_point(alpha = 0.5, color = "blue") +  # Puntos para cada dato
+  geom_point(aes(y = media_prima_anual), color = "green", size = 5) +  # Punto para la media
+  labs(title = "Dispersión de Prima Aual con Media",
+       x = "",
+       y = "Primas Anuales") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Ajusta la orientación del texto en el eje x si es necesario
+
+
+# Histograma para 'prima_anual' con un ancho de bin especificado
+crear_histograma(datos, "prima_anual", binwidth = 100000)
 
 hist(datos$prima_anual)
 boxplot(datos$prima_anual)
 boxplot(datos$prima_anual, main = "Boxplot de Prima Anual", ylab = "Prima Anual", col = "blue")
 
-
-ggplot(datos, aes(x = prima_anual)) +
-  geom_histogram(binwidth = calcular_binwidth(datos$prima_anual), fill = "blue", color = "black") +
-  labs(title = "Histograma de Prima Anual",
-       x = "Prima Anual",
-       y = "Frecuencia") +
-  theme_minimal()
 
 
 #Usaremos la forma mas comun mediante el calculo de los cuartiles y luego verificar
