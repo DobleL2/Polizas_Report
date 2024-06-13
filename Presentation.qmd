@@ -92,13 +92,21 @@ df_tipos <- data.frame(
 
 Las pólizas de seguro son esenciales para proteger a individuos y empresas contra riesgos financieros imprevistos, ofreciendo estabilidad económica. Analizar estos datos ayuda a las aseguradoras a comprender mejor los riesgos y adaptar sus productos a las necesidades específicas de los clientes.
 
-### ¿Que son las polizas de seguro? {style="text-align: justify;"}
+### ¿Que son? {style="text-align: justify;"}
 
 Las pólizas de seguro son contratos entre una entidad aseguradora y una persona o empresa, en los cuales la aseguradora se compromete a compensar al asegurado por pérdidas específicas a cambio de una prima periódica. Estos contratos proporcionan protección financiera cubriendo diversos riesgos, como accidentes, enfermedades, daños a la propiedad, o responsabilidad legal.
+
+###	Importancia. {style="text-align: justify;"}
+- Proteccion y seguridad financiera.
+- Faciliatacion del riesgo empresarial.
+- Requerimiento Legal y Contractual
 :::
 
 ## Análisis de los valores atípicos {.smaller background-image="images/background2.png"}
 
+::: panel-tabset
+
+### Visualización
 ```{r}
 datos_modificados_cuartiles <- function(datos, nombre_columna, cuartil_inferior, cuartil_superior) {
   ci <- cuartil_inferior / 100
@@ -275,6 +283,64 @@ output$viewGrafico2 <- renderPlot({
   grafico2()
 })
 ```
+### Tratamiento {.smaller background-image="images/background2.png" style="font-size:0.6em;"}
+
+```{.r}
+datos_modificados_cuartiles <- function(datos, nombre_columna, cuartil_inferior, cuartil_superior) {
+  ci <- cuartil_inferior / 100
+  cs <- cuartil_superior / 100
+  
+  # Acceder dinámicamente a la columna usando [[ ]]
+  t <- datos[[nombre_columna]]
+  
+  # Calcular cuartiles y IQR basado en estos cuartiles personalizados
+  Qinf <- quantile(t, ci, na.rm = TRUE)
+  Qsup <- quantile(t, cs, na.rm = TRUE)
+  IQR <- Qsup - Qinf
+  
+  # Determinar y corregir valores atípicos
+  lower_bound <- Qinf - 1.5 * IQR
+  upper_bound <- Qsup + 1.5 * IQR
+  t <- ifelse(t < lower_bound, lower_bound, ifelse(t > upper_bound, upper_bound, t))
+  
+  # Actualizar la columna en el dataframe original
+  datos[[nombre_columna]] <- t
+  
+  return(datos)
+}
+```
+
+### Diagrama {.smaller background-image="images/background2.png" style="font-size:0.6em;"}
+
+```{.r}
+diagrama_caja_bigotes<- function(datos, nombre_columna, cuartil_inferior, cuartil_superior){
+  # Convertir porcentajes a decimales
+  ci <- cuartil_inferior / 100
+  cs <- cuartil_superior / 100
+  
+  # Extraer la columna de interés
+  columna_datos <- datos[[nombre_columna]]
+  
+  # Calcular los cuártiles personalizados
+  Qinf <- quantile(columna_datos, ci, na.rm = TRUE)
+  Qsup <- quantile(columna_datos, cs, na.rm = TRUE)
+  
+  # Crear el boxplot
+  p <- ggplot(datos, aes_string(x = "1", y = nombre_columna)) +
+    geom_boxplot() +
+    geom_hline(yintercept = c(Qinf, Qsup), color = "red", linetype = "dashed") +
+    labs(title = paste("Boxplot con Cuártiles Personalizados: ", nombre_columna),
+         x = "",
+         y = nombre_columna) +
+    theme_minimal() +
+    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+  
+  # Imprimir el gráfico
+  print(p)
+}
+```
+
+:::
 
 ## Relacion sucursal y ramo comercial {.smaller background-image="images/background2.png"}
 
@@ -389,11 +455,273 @@ output$viewTable3 <- renderTable({
 })
 ```
 
-### Residuos de Pearson
 
 ```{r}
 tableOutput("viewTable3")
 ```
+### Análisis y generación de tablas
+
+
+```{.r}
+pregunta2 <- function(datos, relacion1, relacion2, numerico1){
+  # Convert column names from string to symbols
+  relacion1_sym <- sym(relacion1)
+  relacion2_sym <- sym(relacion2)
+  numerico1_sym <- sym(numerico1)
+  
+  # Group and summarize to calculate the total
+  tabla_conti <- datos %>%
+    group_by(!!relacion1_sym, !!relacion2_sym) %>%
+    summarise(total_numerico1 = sum(!!numerico1_sym, na.rm = TRUE), .groups = 'drop')
+  
+  # Create contingency matrix
+  matriz_contingencia <- xtabs(total_numerico1 ~ ., data = tabla_conti)
+  
+  # Convert the matrix to a data frame immediately to maintain data frame structure
+  matriz_contingencia_df <- as.data.frame.matrix(matriz_contingencia)
+  matriz_contingencia_df <- cbind(Indice = rownames(matriz_contingencia_df), matriz_contingencia_df)
+  
+  # Perform chi-squared test
+  prueba_chi <- chisq.test(matriz_contingencia)
+  result1 <- prueba_chi$p.value
+  
+  # Calculate residuals
+  residuos <- residuals(prueba_chi, type = "pearson")
+  residuos <- as.data.frame(residuos)
+  residuos
+  
+  # Create graph
+  grafica <- ggplot(tabla_conti, aes(x = !!relacion1_sym, y = total_numerico1, fill = !!relacion2_sym)) +
+    geom_bar(stat = "identity", position = position_dodge()) +
+    theme_minimal() +
+    labs(title = "Numerico1 Promedio por Relacion1 y Relacion2",
+         x = relacion1,
+         y = "Numerico1 Promedio") +
+    theme(legend.position = "bottom")
+  
+  # Return results as a list
+  resultado <- list(Contigencia = matriz_contingencia_df,  # Return as a data frame
+                    Valorp = result1,
+                    Residuos = residuos,
+                    Diagrama = grafica)
+  
+  return(resultado)
+}
+```
+
+
 :::
 
 ## Serie Temporal {.smaller background-image="images/background2.png"}
+
+::: panel-tabset
+
+### Visualización de las series {.smaller background-image="images/background2.png"}
+
+#### Serie de tiempo que muestra el comportamiento de la prima anual
+```{r}
+plotOutput("diagrama2")
+```
+
+#### Serie de tiempo que muestra el comportamiento de la suma asegurada
+```{r}
+plotOutput("diagrama3")
+```
+
+```{r}
+#| context: server
+
+library(readxl)  # Para leer archivos Excel
+library(dplyr)   # Para manipulación de datos
+library(ggplot2) # Para visualización de datos
+library(tidyr)   # Para manipular la estructura de los datos
+library(knitr) 
+library(DT)
+library(rlang)
+library(lubridate)
+library(cluster)
+pregunta3 <- function(datos, fechas, numeros) {
+  # Convertir nombres de columnas de string a símbolos y evaluarlos
+  fechas_sym <- rlang::sym(fechas)
+  numeros_sym <- rlang::sym(numeros)
+  
+  # Convertir la columna de fechas y asegurar que está en formato de fecha
+  datos <- datos %>%
+    mutate(!!fechas_sym := as.Date(!!fechas_sym, origin = "1899-12-30"),
+           MonthYear = floor_date(!!fechas_sym, "month"))  # Agrupar por mes y año
+  
+  # Agrupar datos por la nueva columna MonthYear y calcular el promedio de numeros
+  datos_agrupados <- datos %>%
+    group_by(MonthYear) %>%
+    summarize(ValorNumerico = mean(!!numeros_sym, na.rm = TRUE), .groups = 'drop')
+  
+  # Minimo y maximo para escalas
+  minimo <- min(datos_agrupados$ValorNumerico)
+  maximo <- max(datos_agrupados$ValorNumerico)
+  intervalo <- (maximo - minimo) / 10  # Ajusta esto según la precisión deseada en el eje y
+  
+  # Crear un gráfico de línea para la serie de tiempo
+  grafico_serie_tiempo <- ggplot(datos_agrupados, aes(x = MonthYear, y = ValorNumerico)) +
+    geom_line(group = 2, colour = "skyblue") +
+    scale_y_continuous(limits = c(minimo, maximo), breaks = seq(minimo, maximo, by = intervalo)) +
+    theme_minimal() +
+    labs(title = "Serie de Tiempo de Valor Numérico por Mes",
+         x = "Mes y Año",
+         y = "Valor Numérico Promedio") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Inclinar las etiquetas de fecha si son demasiadas o muy largas
+  
+  # Mostrar el gráfico
+  print(grafico_serie_tiempo)
+}
+#**********************************************************************************************************************************************************
+# Leer el archivo de Excel
+
+diagrama2_ <- reactive({
+  pregunta3(data(), "fecha_emision", "prima_anual")
+})
+
+diagrama3_ <- reactive({
+  pregunta3(data(), "fecha_emision", "suma_aseg")
+})
+
+output$diagrama2 <- renderPlot({
+  diagrama2_()
+})
+
+output$diagrama3 <- renderPlot({
+  diagrama3_()
+})
+```
+
+### Código de los gráficos {.smaller background-image="images/background2.png"}
+
+```{.r}
+pregunta3 <- function(datos, fechas, numeros) {
+  # Convertir nombres de columnas de string a símbolos y evaluarlos
+  fechas_sym <- rlang::sym(fechas)
+  numeros_sym <- rlang::sym(numeros)
+  
+  # Convertir la columna de fechas y asegurar que está en formato de fecha
+  datos <- datos %>%
+    mutate(!!fechas_sym := as.Date(!!fechas_sym, origin = "1899-12-30"),
+           MonthYear = floor_date(!!fechas_sym, "month"))  # Agrupar por mes y año
+  
+  # Agrupar datos por la nueva columna MonthYear y calcular el promedio de numeros
+  datos_agrupados <- datos %>%
+    group_by(MonthYear) %>%
+    summarize(ValorNumerico = mean(!!numeros_sym, na.rm = TRUE), .groups = 'drop')
+  
+  # Minimo y maximo para escalas
+  minimo <- min(datos_agrupados$ValorNumerico)
+  maximo <- max(datos_agrupados$ValorNumerico)
+  intervalo <- (maximo - minimo) / 10  # Ajusta esto según la precisión deseada en el eje y
+  
+  # Crear un gráfico de línea para la serie de tiempo
+  grafico_serie_tiempo <- ggplot(datos_agrupados, aes(x = MonthYear, y = ValorNumerico)) +
+    geom_line(group = 2, colour = "skyblue") +
+    scale_y_continuous(limits = c(minimo, maximo), breaks = seq(minimo, maximo, by = intervalo)) +
+    theme_minimal() +
+    labs(title = "Serie de Tiempo de Valor Numérico por Mes",
+         x = "Mes y Año",
+         y = "Valor Numérico Promedio") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Inclinar las etiquetas de fecha si son demasiadas o muy largas
+  
+  # Mostrar el gráfico
+  print(grafico_serie_tiempo)
+}
+```
+:::
+
+## Segmentación de Clientes  {.smaller background-image="images/background2.png"}
+
+::: panel-tabset
+
+### Visualización de las clusters {.smaller background-image="images/background2.png"}
+
+```{r}
+plotOutput("diagrama4")
+```
+
+```{r}
+#| context: server
+
+library(readxl)  # Para leer archivos Excel
+library(dplyr)   # Para manipulación de datos
+library(ggplot2) # Para visualización de datos
+library(tidyr)   # Para manipular la estructura de los datos
+library(knitr) 
+library(DT)
+library(rlang)
+library(lubridate)
+library(cluster)
+pregunta4 <- function(datos, tipo1, tipo2, numeros, centros, repeticiones) {
+  tipo1_sym <- rlang::sym(tipo1)
+  tipo2_sym <- rlang::sym(tipo2)
+  numeros_sym <- rlang::sym(numeros)
+  
+  # Preparación de datos
+  datos <- datos %>%
+    mutate(across(all_of(c(tipo1, tipo2)), as.factor)) %>%
+    mutate(!!tipo1_sym := as.numeric(as.factor(!!tipo1_sym)),
+           !!tipo2_sym := as.numeric(as.factor(!!tipo2_sym)))
+  
+  # Aplicación de k-Means
+  k <- kmeans(datos %>% select(!!tipo1_sym, !!tipo2_sym, !!numeros_sym), centers = centros, nstart = repeticiones)
+  datos$cluster <- as.factor(k$cluster)
+  
+  # Creación del gráfico con facetas
+  G <- ggplot(datos, aes(x = !!tipo2_sym, y = !!numeros_sym, color = cluster)) +
+    geom_point(alpha = 0.5) +
+    #facet_wrap(~cluster) +  # Crea una faceta para cada cluster
+    theme_minimal() +
+    labs(title = "Distribución de Clusters",
+         x = paste("Tipo", tipo2),
+         y = "Suma Asegurada") +
+    scale_color_brewer(palette = "Set1")
+  
+  print(G)
+}
+
+diagrama4_ <- reactive({
+  pregunta4(data(), "tipo_persona", "tipo_agente", "suma_aseg", 3, 10)
+})
+
+
+output$diagrama4 <- renderPlot({
+  diagrama4_()
+})
+```
+
+### Generación K-means {.smaller background-image="images/background2.png"}
+
+```{.r}
+pregunta4 <- function(datos, tipo1, tipo2, numeros, centros, repeticiones) {
+  tipo1_sym <- rlang::sym(tipo1)
+  tipo2_sym <- rlang::sym(tipo2)
+  numeros_sym <- rlang::sym(numeros)
+  
+  # Preparación de datos
+  datos <- datos %>%
+    mutate(across(all_of(c(tipo1, tipo2)), as.factor)) %>%
+    mutate(!!tipo1_sym := as.numeric(as.factor(!!tipo1_sym)),
+           !!tipo2_sym := as.numeric(as.factor(!!tipo2_sym)))
+  
+  # Aplicación de k-Means
+  k <- kmeans(datos %>% select(!!tipo1_sym, !!tipo2_sym, !!numeros_sym), centers = centros, nstart = repeticiones)
+  datos$cluster <- as.factor(k$cluster)
+  
+  # Creación del gráfico con facetas
+  G <- ggplot(datos, aes(x = !!tipo2_sym, y = !!numeros_sym, color = cluster)) +
+    geom_point(alpha = 0.5) +
+    #facet_wrap(~cluster) +  # Crea una faceta para cada cluster
+    theme_minimal() +
+    labs(title = "Distribución de Clusters",
+         x = paste("Tipo", tipo2),
+         y = "Suma Asegurada") +
+    scale_color_brewer(palette = "Set1")
+  
+  print(G)
+}
+```
+
+:::
