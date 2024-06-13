@@ -306,6 +306,7 @@
     }
     .reveal .slide:not(.center) {
       height: 100%;
+      overflow-y: auto;
     }
     .reveal .slide.scrollable {
       overflow-y: auto;
@@ -382,14 +383,12 @@
       margin-right: 0; 
     }
   </style>
-  <script type="module" src="Presentation_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
-  <link href="Presentation_files/libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center">
+<section id="title-slide" data-background-image="images/background2.png" data-background-size="auto" class="quarto-title-block center">
   <h1 class="title">Reportes Polizas</h1>
 
 <div class="quarto-title-authors">
@@ -397,42 +396,323 @@
 <div class="quarto-title-author-name">
 Luis Lapo, Mathew Cisneros 
 </div>
-</div>
+        <p class="quarto-title-affiliation">
+            Escuela Politécnica Nacional
+          </p>
+    </div>
 </div>
 
+  <p class="date">6/13/24</p>
 </section>
-<section id="holi" class="slide level2">
-<h2>Holi</h2>
+<section id="entendimiento-de-los-datos" class="slide level2 smaller" data-background-image="images/background2.png">
+<h2>Entendimiento de los datos</h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Primer Acercamiento</a></li><li><a href="#tabset-1-2">Datos</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="16" data-source-offset="0"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 15;"><span id="cb1-16"><a href="#cb1-16"></a>data <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"polizas.xlsx"</span>)<span class="op">.</span><span class="fu">xlsx</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div id="ojs-cell-1" data-nodetype="declaration">
 
 </div>
-</div>
-</div>
+<div class="columns">
+<div class="column" style="font-size: 0.7em;width:43%;text-align: justify;">
+<h3 id="primer-acercamiento-1">Primer acercamiento</h3>
+<p>El objetivo sería definir el tipo de variables ya sean cuantitativas o cualitativas de cada columna del dataset. En primer lugar determinamos el tipo de dato que se tiene en cada columna y la cantidad de valores no nulos.</p>
+</div><div class="column" style="width:5%;">
+
+</div><div class="column" style="font-size: 0.33em;width:45%">
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="19" data-source-offset="0"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 18;"><span id="cb2-19"><a href="#cb2-19"></a>viewof giro_actividad <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
-<span id="cb2-20"><a href="#cb2-20"></a>  [<span class="st">"Comercializacion/Distribucion"</span><span class="op">,</span> <span class="st">"Produccion"</span>]<span class="op">,</span> </span>
-<span id="cb2-21"><a href="#cb2-21"></a>  { <span class="dt">value</span><span class="op">:</span> [<span class="st">"Comercializacion/Distribucion"</span><span class="op">,</span> <span class="st">"Produccion"</span>]<span class="op">,</span> </span>
-<span id="cb2-22"><a href="#cb2-22"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Giro Actividad:"</span></span>
-<span id="cb2-23"><a href="#cb2-23"></a>  }</span>
-<span id="cb2-24"><a href="#cb2-24"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div id="ojs-cell-2" data-nodetype="declaration">
+<div class="cell-output-display">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Tipo_Dato</th>
+<th style="text-align: right;">Valores_no_nulos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">giro_actividad</td>
+<td style="text-align: left;">character</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">fecha_constitucion</td>
+<td style="text-align: left;">numeric</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">id_poliza</td>
+<td style="text-align: left;">character</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anio_mes</td>
+<td style="text-align: left;">numeric</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tipo_agente</td>
+<td style="text-align: left;">character</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sucursal</td>
+<td style="text-align: left;">character</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ramo_comercial</td>
+<td style="text-align: left;">character</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tipo_persona</td>
+<td style="text-align: left;">character</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">prima_anual</td>
+<td style="text-align: left;">numeric</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">prima_emitida</td>
+<td style="text-align: left;">numeric</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">fecha_emision</td>
+<td style="text-align: left;">numeric</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">fecha_vigencia_desde</td>
+<td style="text-align: left;">numeric</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">fecha_vigencia_hasta</td>
+<td style="text-align: left;">numeric</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">forma_pago</td>
+<td style="text-align: left;">character</td>
+<td style="text-align: right;">32028</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">suma_aseg</td>
+<td style="text-align: left;">numeric</td>
+<td style="text-align: right;">32028</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" style="font-size: 0.33em">
+<div class="cell">
+<div class="cell-output-display">
+<table>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 4%">
+<col style="width: 3%">
+<col style="width: 6%">
+<col style="width: 4%">
+<col style="width: 12%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 4%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">giro_actividad</th>
+<th style="text-align: right;">fecha_constitucion</th>
+<th style="text-align: left;">id_poliza</th>
+<th style="text-align: right;">anio_mes</th>
+<th style="text-align: left;">tipo_agente</th>
+<th style="text-align: left;">sucursal</th>
+<th style="text-align: left;">ramo_comercial</th>
+<th style="text-align: left;">tipo_persona</th>
+<th style="text-align: right;">prima_anual</th>
+<th style="text-align: right;">prima_emitida</th>
+<th style="text-align: right;">fecha_emision</th>
+<th style="text-align: right;">fecha_vigencia_desde</th>
+<th style="text-align: right;">fecha_vigencia_hasta</th>
+<th style="text-align: left;">forma_pago</th>
+<th style="text-align: right;">suma_aseg</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Produccion</td>
+<td style="text-align: right;">39184</td>
+<td style="text-align: left;">67421</td>
+<td style="text-align: right;">44409</td>
+<td style="text-align: left;">PRODUCTOR</td>
+<td style="text-align: left;">QUITO</td>
+<td style="text-align: left;">BUEN USO DE ANTICIPO</td>
+<td style="text-align: left;">JURIDICO</td>
+<td style="text-align: right;">30756</td>
+<td style="text-align: right;">2563</td>
+<td style="text-align: right;">43284</td>
+<td style="text-align: right;">43280</td>
+<td style="text-align: right;">44469</td>
+<td style="text-align: left;">EFECTIVO</td>
+<td style="text-align: right;">9171645</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Produccion</td>
+<td style="text-align: right;">27418</td>
+<td style="text-align: left;">89042</td>
+<td style="text-align: right;">44166</td>
+<td style="text-align: left;">UNIDAD DE PRODU</td>
+<td style="text-align: left;">QUITO</td>
+<td style="text-align: left;">FIEL CUMPLIMIENTO DE CONTRATO</td>
+<td style="text-align: left;">JURIDICO</td>
+<td style="text-align: right;">120096</td>
+<td style="text-align: right;">10008</td>
+<td style="text-align: right;">42809</td>
+<td style="text-align: right;">42700</td>
+<td style="text-align: right;">44890</td>
+<td style="text-align: left;">EFECTIVO</td>
+<td style="text-align: right;">13900</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Comercializacion/Distribucion</td>
+<td style="text-align: right;">36952</td>
+<td style="text-align: left;">96382</td>
+<td style="text-align: right;">44075</td>
+<td style="text-align: left;">DIRECTO</td>
+<td style="text-align: left;">QUITO</td>
+<td style="text-align: left;">FIEL CUMPLIMIENTO DE CONTRATO</td>
+<td style="text-align: left;">JURIDICO</td>
+<td style="text-align: right;">47916</td>
+<td style="text-align: right;">3993</td>
+<td style="text-align: right;">43915</td>
+<td style="text-align: right;">43906</td>
+<td style="text-align: right;">44146</td>
+<td style="text-align: left;">EFECTIVO</td>
+<td style="text-align: right;">60725</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Comercializacion/Distribucion</td>
+<td style="text-align: right;">38084</td>
+<td style="text-align: left;">70642</td>
+<td style="text-align: right;">44075</td>
+<td style="text-align: left;">PRODUCTOR</td>
+<td style="text-align: left;">QUITO</td>
+<td style="text-align: left;">BUEN USO DE ANTICIPO</td>
+<td style="text-align: left;">JURIDICO</td>
+<td style="text-align: right;">18024</td>
+<td style="text-align: right;">1502</td>
+<td style="text-align: right;">44085</td>
+<td style="text-align: right;">44082</td>
+<td style="text-align: right;">44127</td>
+<td style="text-align: left;">EFECTIVO</td>
+<td style="text-align: right;">6768288</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Comercializacion/Distribucion</td>
+<td style="text-align: right;">39850</td>
+<td style="text-align: left;">67486</td>
+<td style="text-align: right;">43709</td>
+<td style="text-align: left;">PRODUCTOR</td>
+<td style="text-align: left;">GUAYAQUIL</td>
+<td style="text-align: left;">FIEL CUMPLIMIENTO DE CONTRATO</td>
+<td style="text-align: left;">JURIDICO</td>
+<td style="text-align: right;">1337136</td>
+<td style="text-align: right;">111428</td>
+<td style="text-align: right;">43389</td>
+<td style="text-align: right;">43402</td>
+<td style="text-align: right;">43822</td>
+<td style="text-align: left;">EFECTIVO</td>
+<td style="text-align: right;">15063377</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Produccion</td>
+<td style="text-align: right;">36395</td>
+<td style="text-align: left;">55563</td>
+<td style="text-align: right;">43405</td>
+<td style="text-align: left;">UNIDAD DE PRODU</td>
+<td style="text-align: left;">GUAYAQUIL</td>
+<td style="text-align: left;">GARANTIA ADUANERA</td>
+<td style="text-align: left;">JURIDICO</td>
+<td style="text-align: right;">40632</td>
+<td style="text-align: right;">3386</td>
+<td style="text-align: right;">43423</td>
+<td style="text-align: right;">43423</td>
+<td style="text-align: right;">43453</td>
+<td style="text-align: left;">EFECTIVO</td>
+<td style="text-align: right;">9961</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="lectura-de-los-datos-en-r" class="slide level2 smaller" data-background-image="images/background2.png">
+<h2>Lectura de los datos en r</h2>
+<div class="sourceCode" id="cb1" data-code-line-numbers="2-6|9-10|13-16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Cargar las bibliotecas necesarias</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(readxl)  <span class="co"># Para leer archivos Excel</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(dplyr)   <span class="co"># Para manipulación de datos</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(ggplot2) <span class="co"># Para visualización de datos</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(tidyr)   <span class="co"># Para manipular la estructura de los datos</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">library</span>(knitr)   <span class="co"># Para generar reportes dinámicos</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co"># Leer el archivo de Excel</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>path_file <span class="ot">=</span> <span class="st">"polizas.xlsx"</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>datos <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(path_file)</span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co"># Generar un data.frame en donde se indica el tipo de dato y la cantidad de valores no nulos por columna</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>df_tipos <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-14"><a href="#cb1-14"></a>  <span class="at">Tipo_Dato =</span> <span class="fu">sapply</span>(datos, class),</span>
+<span id="cb1-15"><a href="#cb1-15"></a>  <span class="at">Valores_no_nulos =</span> <span class="fu">sapply</span>(datos, <span class="cf">function</span>(x) <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(x)))</span>
+<span id="cb1-16"><a href="#cb1-16"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="introduccion-al-dataset" class="slide level2 smaller" data-background-image="images/background2.png">
+<h2>Introduccion al dataset</h2>
+<h3 id="introducción">Introducción</h3>
+<p>Las pólizas de seguro son esenciales para proteger a individuos y empresas contra riesgos financieros imprevistos, ofreciendo estabilidad económica. Analizar estos datos ayuda a las aseguradoras a comprender mejor los riesgos y adaptar sus productos a las necesidades específicas de los clientes.</p>
+<h3 id="que-son-las-polizas-de-seguro">¿Que son las polizas de seguro?</h3>
+<p>Las pólizas de seguro son contratos entre una entidad aseguradora y una persona o empresa, en los cuales la aseguradora se compromete a compensar al asegurado por pérdidas específicas a cambio de una prima periódica. Estos contratos proporcionan protección financiera cubriendo diversos riesgos, como accidentes, enfermedades, daños a la propiedad, o responsabilidad legal.</p>
+</section>
+<section id="análisis-de-los-valores-atípicos" class="slide level2">
+<h2>Análisis de los valores atípicos</h2>
+<div class="layout-sidebar layout-sidebar-left">
+<div class="cell panel-sidebar">
+<div class="cell-output-display">
+<div class="form-group shiny-input-container">
+<label class="control-label" id="bins-label" for="bins">Number of bins:</label>
+<input class="js-range-slider" id="bins" data-skin="shiny" data-min="1" data-max="50" data-from="30" data-step="1" data-grid="true" data-grid-num="9.8" data-grid-snap="false" data-prettify-separator="," data-prettify-enabled="true" data-keyboard="true" data-data-type="number">
+</div>
+</div>
+</div>
+<div class="panel-fill">
+<div class="cell" data-context="server">
 
 </div>
 </div>
 </div>
 </section>
-<section id="slide-title" class="slide level2" data-transition="convex" data-transition-speed="fast">
-<h2>Slide Title</h2>
-</section>
-<section id="quarto" class="slide level2">
+<section id="quarto" class="slide level2 smaller" data-background-image="images/background2.png">
 <h2>Quarto</h2>
 <p>Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <a href="https://quarto.org/docs/presentations/" class="uri">https://quarto.org/docs/presentations/</a>.</p>
 </section>
-<section id="bullets" class="slide level2">
+<section id="bullets" class="slide level2 column" width="42%" style="font-size: 0.33em;width:45%">
 <h2>Bullets</h2>
 <p>When you click the <strong>Render</strong> button a document will be generated that includes:</p>
 <ul>
@@ -448,6 +728,49 @@ Luis Lapo, Mathew Cisneros
 <pre><code>[1] 2</code></pre>
 </div>
 </div>
+<p>
+<script type="application/shiny-prerendered" data-context="server">
+# empty server context
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server-extras">
+ojs_define <- function(..., .session = shiny::getDefaultReactiveDomain()) {
+  quos <- rlang::enquos(...)
+  vars <- rlang::list2(...)
+  nm <- names(vars)
+  if (is.null(nm)) {
+    nm <- rep_len("", length(vars))
+  }
+  mapply(function(q, nm, val) {
+    # Infer name, if possible
+    if (nm == "") {
+      tryCatch({
+        nm <- rlang::as_name(q)
+      }, error = function(e) {
+        code <- paste(collapse = "\n", deparse(rlang::f_rhs(q)))
+        stop("ojs_define() could not create a name for the argument: ", code)
+      })
+    }
+    .session$output[[nm]] <- val
+    outputOptions(.session$output, nm, suspendWhenHidden = FALSE)
+    .session$sendCustomMessage("ojs-export", list(name = nm))
+    NULL
+  }, quos, nm, vars, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+  invisible()
+}
+</script>
+</p>
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="dependencies">
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ionrangeslider-javascript"]},{"type":"character","attributes":{},"value":["2.3.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["www/shared/ionrangeslider"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/ion.rangeSlider.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["shiny"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.8.1.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["strftime"]},{"type":"character","attributes":{},"value":["0.9.2"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["www/shared/strftime"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["strftime-min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["shiny"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.8.1.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ionrangeslider-css"]},{"type":"character","attributes":{},"value":["2.3.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["www/shared/ionrangeslider"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/ion.rangeSlider.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["shiny"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.8.1.1"]}]}]}
+</script>
+<!--/html_preserve-->
+<!--html_preserve-->
+
+<script type="application/shiny-prerendered" data-context="execution_dependencies">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57]}},"value":[{"type":"character","attributes":{},"value":["base","bslib","cachem","cellranger","cli","colorspace","compiler","datasets","digest","dplyr","evaluate","fansi","fastmap","generics","ggplot2","glue","graphics","grDevices","grid","gtable","htmltools","httpuv","jquerylib","jsonlite","knitr","later","lifecycle","magrittr","memoise","methods","mime","munsell","pillar","pkgconfig","promises","purrr","R6","Rcpp","readxl","rlang","rmarkdown","rstudioapi","sass","scales","shiny","stats","tibble","tidyr","tidyselect","tools","utf8","utils","vctrs","withr","xfun","xtable","yaml"]},{"type":"character","attributes":{},"value":["4.2.2","0.5.1","1.0.8","1.1.0","3.6.1","2.1-0","4.2.2","4.2.2","0.6.33","1.1.2","0.21","1.0.4","1.1.1","0.1.3","3.5.1","1.6.2","4.2.2","4.2.2","4.2.2","0.3.3","0.5.6","1.6.11","0.1.4","1.8.7","1.43","1.3.1","1.0.3","2.0.3","2.0.1","4.2.2","0.12","0.5.0","1.9.0","2.0.3","1.2.1","1.0.2","2.5.1","1.0.11","1.4.3","1.1.1","2.24","0.15.0","0.4.7","1.3.0","1.8.1.1","4.2.2","3.2.1","1.3.0","1.2.0","4.2.2","1.2.3","4.2.2","0.6.3","2.5.0","0.40","1.8-4","2.3.7"]}]}]}
+</script>
+<!--/html_preserve-->
 <div class="footer footer-default">
 
 </div>
@@ -483,7 +806,7 @@ Luis Lapo, Mathew Cisneros
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true,"width":"wide"},
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'smaller': false,
  
         // Display controls in the bottom right corner
@@ -545,7 +868,7 @@ Luis Lapo, Mathew Cisneros
         rtl: false,
 
         // see https://revealjs.com/vertical-slides/#navigation-mode
-        navigationMode: 'linear',
+        navigationMode: 'default',
 
         // Randomizes the order of slides each time the presentation loads
         shuffle: false,
@@ -662,16 +985,6 @@ Luis Lapo, Mathew Cisneros
           RevealZoom
         ]
       });
-    </script>
-    <script type="ojs-module-contents">
-    {"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"data = FileAttachment(\"polizas.xlsx\").xlsx()\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"viewof giro_actividad = Inputs.checkbox(\n  [\"Comercializacion/Distribucion\", \"Produccion\"], \n  { value: [\"Comercializacion/Distribucion\", \"Produccion\"], \n    label: \"Giro Actividad:\"\n  }\n)\n\n"},{"methodName":"interpretQuiet","source":"shinyInput('giro_actividad')"}]}
-    </script>
-    <script type="module">
-    window._ojs.paths.runtimeToDoc = "../../..";
-    window._ojs.paths.runtimeToRoot = "../../..";
-    window._ojs.paths.docToRoot = "";
-    window._ojs.selfContained = false;
-    window._ojs.runtime.interpretFromScriptTags();
     </script>
     
     <script>

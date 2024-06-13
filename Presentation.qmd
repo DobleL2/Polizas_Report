@@ -1,36 +1,117 @@
 ---
 title: "Reportes Polizas"
+date: "06-13-24"
+institute: "Escuela Politécnica Nacional"
 author: "Luis Lapo, Mathew Cisneros"
 format: 
   revealjs:
-    menu:
-      side: left
-      width: wide
     transition: zoom
     background-transition: fade
+    scrollable: true
+    navigation-mode: vertical
 editor: visual
+title-slide-attributes:
+    data-background-image: "images/background2.png"
+    
 server: shiny
-
 ---
 
-## Holi
-```{r}
+## Entendimiento de los datos {.smaller background-image="images/background2.png"} 
 
+::: {.panel-tabset }
+
+### Primer Acercamiento
+
+```{r}
+# Cargar las bibliotecas necesarias
+library(readxl)  # Para leer archivos Excel
+library(dplyr)   # Para manipulación de datos
+library(ggplot2) # Para visualización de datos
+library(tidyr)   # Para manipular la estructura de los datos
+library(knitr) 
+
+# Leer el archivo de Excel
+path_file = "polizas.xlsx"
+datos <- read_excel(path_file)
+
+# Generar un data.frame en donde se indica el tipo de dato y la cantidad de valores no nulos por columna
+df_tipos <- data.frame(
+  Tipo_Dato = sapply(datos, class),
+  Valores_no_nulos = sapply(datos, function(x) sum(!is.na(x)))
+)
+```
+::: columns
+::: {.column width="33%" style="font-size: 0.7em;width:43%;text-align: justify;"}
+### Primer acercamiento
+El objetivo sería definir el tipo de variables ya sean cuantitativas o cualitativas de cada columna del dataset. En primer lugar determinamos el tipo de dato que se tiene en cada columna y la cantidad de valores no nulos.
+:::
+
+::: {.column width="5%"}
+:::
+
+::: {.column width="42%" style="font-size: 0.33em;width:45%"} 
+```{r}
+knitr::kable(df_tipos[,c("Tipo_Dato",	"Valores_no_nulos")])
+```
+:::
+::: 
+
+### Datos {style="font-size: 0.33em"} 
+
+```{r}
+knitr::kable(head(datos))
+```
+
+:::
+## Lectura de los datos en r {.smaller background-image="images/background2.png"} 
+
+```{.r code-line-numbers="2-6|9-10|13-16"}
+# Cargar las bibliotecas necesarias
+library(readxl)  # Para leer archivos Excel
+library(dplyr)   # Para manipulación de datos
+library(ggplot2) # Para visualización de datos
+library(tidyr)   # Para manipular la estructura de los datos
+library(knitr)   # Para generar reportes dinámicos
+
+# Leer el archivo de Excel
+path_file = "polizas.xlsx"
+datos <- read_excel(path_file)
+
+# Generar un data.frame en donde se indica el tipo de dato y la cantidad de valores no nulos por columna
+df_tipos <- data.frame(
+  Tipo_Dato = sapply(datos, class),
+  Valores_no_nulos = sapply(datos, function(x) sum(!is.na(x)))
+)
+```
+## Introduccion al dataset {.smaller background-image="images/background2.png"} 
+
+###	Introducción
+
+Las pólizas de seguro son esenciales para proteger a individuos y empresas contra riesgos financieros imprevistos, ofreciendo estabilidad económica. Analizar estos datos ayuda a las aseguradoras a comprender mejor los riesgos y adaptar sus productos a las necesidades específicas de los clientes.
+
+###	¿Que son las polizas de seguro?
+
+Las pólizas de seguro son contratos entre una entidad aseguradora y una persona o empresa, en los cuales la aseguradora se compromete a compensar al asegurado por pérdidas específicas a cambio de una prima periódica. Estos contratos proporcionan protección financiera cubriendo diversos riesgos, como accidentes, enfermedades, daños a la propiedad, o responsabilidad legal.
+
+## Análisis de los valores atípicos {.smaller background-image="images/background2.png"} 
+
+```{r}
+#| panel: sidebar
+
+sliderInput("bins", "Number of bins:", min = 1, max = 50, value = 30)
 ```
 
 ```{r}
+#| context: server
+
 
 ```
 
-
-
-## Slide Title {transition="convex" transition-speed="fast"}
-
-## Quarto
+## Quarto{.smaller background-image="images/background2.png"} 
 
 Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
 
-## Bullets
+## Bullets  {.column width="42%" style="font-size: 0.33em;width:45%"} 
 
 When you click the **Render** button a document will be generated that includes:
 

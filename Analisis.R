@@ -15,6 +15,7 @@ library(reshape)
 
 # Leer el archivo de Excel
 datos <- read_excel("polizas.xlsx")
+
 tabla_contingencia <- datos %>%
   group_by(sucursal, ramo_comercial) %>%
   summarise(prima_total = sum(prima_emitida, na.rm = TRUE), .groups = 'drop')
@@ -70,3 +71,5 @@ colnames(datos_no_nulos_transpuesto) <- c("Cantidad_No_Nulos")
 
 # Mostrar el dataframe transpuesto
 View(datos_no_nulos_transpuesto)
+
+
